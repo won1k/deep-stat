@@ -36,7 +36,7 @@ def gen_data(ntrain, ntest, data_dim):
 # Generate and save data
 for n in ntrain:
 	for p in data_dim:
-		X_train, X_test, Y_train, Y_test = gen_data(n, n/10, p)
+		X_train, X_test, Y_train, Y_test = gen_data(n, n, p)
 		np.save("data/X_train_p" + str(p) + "_n" + str(n), X_train)
 		np.save("data/X_test_p" + str(p) + "_n" + str(n), X_test)
 		np.save("data/Y_train_p" + str(p) + "_n" + str(n), Y_train)
