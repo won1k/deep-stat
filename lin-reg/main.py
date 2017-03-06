@@ -2,14 +2,11 @@ import numpy as np
 from model import model
 import csv
 import sys
-import theano
+#import theano
 
 from sklearn import linear_model
 
 from train_test import trainAndTest
-
-theano.config.device = 'gpu'
-theano.config.floatX = 'float32'
 
 # Settings
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
@@ -28,7 +25,7 @@ output_prefix = "noreg_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_ra
 def main():
 	print("Data dim: %d" % p)
 	print("Trainset size: %d" % ntrain)
-	print(theano.config.device)
+	#print(theano.config.device)
 
 	output = []
 
