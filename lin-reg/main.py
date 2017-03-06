@@ -2,6 +2,7 @@ import numpy as np
 from model import model
 import csv
 import sys
+import theano
 
 from sklearn import linear_model
 
@@ -23,6 +24,10 @@ nepochs = 800
 output_prefix = "noreg_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
 
 def main():
+	print("Data dim: %d" % p)
+	print("Trainset size: %d" % ntrain)
+	print(theano.config.device)
+
 	output = []
 
 	# Data

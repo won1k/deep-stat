@@ -8,6 +8,7 @@
 #SBATCH -e err      # File to which STDERR will be written
 
 source activate NLP
+module load theano
 
 THEANO_FLAGS=device=gpu,floatX=float32 python my_keras_script.py
 
