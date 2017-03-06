@@ -7,7 +7,7 @@
 #SBATCH -o log      # File to which STDOUT will be written
 #SBATCH -e err      # File to which STDERR will be written
 
-module load keras
+source activate NLP
 
 for n in 100 1000 10000 100000
 do
