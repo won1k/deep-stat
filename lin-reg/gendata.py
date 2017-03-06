@@ -2,7 +2,7 @@ import numpy as np
 import numpy.random as rand
 
 # Settings
-ntrain = [100, 1000, 10000] # , 100000]
+ntrain = [100, 1000, 10000, 100000] # , 100000]
 data_dim = [10, 100, 1000]
 beta = [rand.normal(size = n) for n in data_dim]
 sigma = 10
