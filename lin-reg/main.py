@@ -8,6 +8,8 @@ from sklearn import linear_model
 
 from train_test import trainAndTest
 
+theano.config.device = 'gpu'
+theano.config.floatX = 'float32'
 
 # Settings
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
