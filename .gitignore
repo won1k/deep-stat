@@ -1,3 +1,4 @@
 writeup/
 lin-reg/data/
 lin-reg/results/
+*.pyc
