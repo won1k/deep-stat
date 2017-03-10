@@ -16,6 +16,7 @@ for n in 100000
 do
 	for p in 10 100 1000
 	do
+		printf "Num. train : %d  ,  Data dim. : %d" $n $p
 		python main.py $n $p
 	done
 done

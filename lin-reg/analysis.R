@@ -1,20 +1,46 @@
 # Setup
 library(ggplot2)
+library(gridExtra)
 setwd("~/Projects/deep-stat/lin-reg/results")
 
 
 # Prediction variance vs norm
-predvar = read.csv("noreg_p1000_n100_l0.005_T800_pred_var.csv", header = FALSE)
+prefix = "noreg_p"
+suffix = "_l0.005_T800_pred_var.csv"
+ps = c(10, 100, 1000)
+ns = c(100, 1000, 10000)
+plots = list()
+for (p in ps) {
+  for (n in ns) {
+    if (p == 1000 & n == 10000) {
+      next
+    }
+    data_file = paste(prefix,p,"_n",n,suffix,sep="")
+    predvar = read.csv(data_file, header = FALSE)
+    colnames(predvar) = c("test.var", "test.mse", "test.norm")
+    if (n < p*10) {
+      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 0.2) +
+        labs(x = "Dist. of x* from x.bar", y = "Prediction Variance")
+      plots[[length(plots) + 1]] = c
+    } else {
+      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.5, color = "black") + geom_point(alpha = 0.2) +
+        labs(x = "Dist. of x* from x.bar", y = "Prediction Variance")
+      plots[[length(plots) + 1]] = c
+    }
+  }
+}
+do.call(grid.arrange, c(plots, list(ncol = 3)))
+
+predvar = read.csv("noreg_p10_n1000_l0.005_T800_pred_var.csv", header = FALSE)
 colnames(predvar) = c("test.var", "test.mse", "test.norm")
 hist(predvar[,3], breaks = 20)
 plot(predvar[,3], predvar[,1], xlab = "Dist. of x* from x.bar", ylab = "Prediction Variance",
      pch = 16, cex = 0.5)
 
 # Nice plots
-c = ggplot(predvar, aes(test.norm, test.var))
-c + stat_smooth(method=lm, alpha = 0.1) + geom_point() +
-  labs(x = "Dist. of x* from x.bar", y = "Prediction Variance")
-
+c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1))
+c + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 0.3) +
+  labs(x = "Dist. of x* from x.bar", y = "Prediction Variance", alpha = 0.3)
 
 
 smoothScatter(predvar[,3], predvar[,1], xlab = "Dist. of x* from x.bar", ylab = "Prediction Variance")
