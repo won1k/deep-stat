@@ -16,7 +16,10 @@ for n in 1000 10000 100000
 do
 	for p in 10 100 1000
 	do
-		printf "Num. train : %d  ,  Data dim. : %d" $n $p
-		python main.py $n $p
+		for l in 0 1 2
+		do
+			printf "Num. train : %d  ,  Data dim. : %d  ,  Link fn. : %d" $n $p $l
+			python main.py $n $p $l
+		done
 	done
 done

@@ -11,6 +11,7 @@ from train_test import trainAndTest
 # Settings
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
 p = int(sys.argv[2]) # [10, 100, 1000]
+link_no = int(sys.argv[3])
 nsims = 1000
 
 # Hyperparameters
@@ -20,20 +21,23 @@ hid_dim = 50
 learning_rate = 0.005
 nepochs = 800
 
-output_prefix = "noreg_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
+links = ["cubic", "sigmoid", "exp"]
+link = links[link_no]
+output_prefix = "noreg_" + link + "_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
 
 def main():
 	print("Data dim: %d" % p)
 	print("Trainset size: %d" % ntrain)
+	print("Link function: %s" % link)
 	#print(theano.config.device)
 
 	output = []
 
 	# Data
-	X_train = np.load("data/X_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	Y_train = np.load("data/Y_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	X_test = np.load("data/X_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	Y_test = np.load("data/Y_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	X_train = np.load("data/X_train_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
+	Y_train = np.load("data/Y_train_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
+	X_test = np.load("data/X_test_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
+	Y_test = np.load("data/Y_test_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
 
 	# Compare to linear reg (can do this separately)
 	#linreg = linear_model.LinearRegression()
