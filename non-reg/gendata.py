@@ -46,7 +46,7 @@ def gen_data(ntrain, data_dim, link):
 # Generate and save data
 for n in ntrain:
 	for p in data_dim:
-		for link in link:
+		for link in links:
 			X_train, X_test, Y_train, Y_test = gen_data(n, p, link)
 			np.save("data/X_train_p" + str(p) + "_n" + str(n) + "_" + link, X_train)
 			np.save("data/X_test_p" + str(p) + "_n" + str(n) + "_" + link, X_test)
