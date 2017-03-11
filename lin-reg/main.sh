@@ -7,8 +7,8 @@
 #SBATCH -o log      # File to which STDOUT will be written
 #SBATCH -e err      # File to which STDERR will be written
 
-#source activate NLP
-module load keras
+source activate deepstat
+#module load keras
 #KERAS_BACKEND=tensorflow python -c "from keras import backend"
 
 #THEANO_FLAGS=device=gpu,floatX=float32 python my_keras_script.py
