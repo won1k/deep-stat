@@ -33,8 +33,8 @@ def trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, n, learning_rate 
 	test_res = Y_test - test_preds
 
 	# Weights
-	weights = model.get_weights()
-	w_norm = sum([np.linalg.norm(x) for x in weights])
+	#weights = model.get_weights()
+	#w_norm = sum([np.linalg.norm(x) for x in weights])
 
 	#print("Mean squared error on train: %.2f"
 	#      % np.mean((linreg.predict(X_train) - Y_train) ** 2))
@@ -42,4 +42,4 @@ def trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, n, learning_rate 
 	#      % np.mean((linreg.predict(X_test) - Y_test) ** 2))
 
 	# Return
-	return train_mse, test_mse, train_r2, test_r2, train_time, test_time, w_norm, weights, test_preds, train_res, test_res
+	return train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res #, test_preds, w_norm, weights

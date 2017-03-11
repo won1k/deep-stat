@@ -20,7 +20,8 @@ hid_dim = 50
 learning_rate = 0.005
 nepochs = 800
 
-output_prefix = "noreg_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
+data_prefix = "~/deep-stat/data/"
+output_prefix = "results/noreg_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
 
 def main():
 	print("Data dim: %d" % p)
@@ -30,10 +31,10 @@ def main():
 	output = []
 
 	# Data
-	X_train = np.load("data/X_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	Y_train = np.load("data/Y_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	X_test = np.load("data/X_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
-	Y_test = np.load("data/Y_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	X_train = np.load(data_prefix + "X_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_train = np.load(data_prefix + "Y_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	X_test = np.load(data_prefix + "X_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_test = np.load(data_prefix + "Y_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
 
 	# Compare to linear reg (can do this separately)
 	#linreg = linear_model.LinearRegression()
@@ -42,31 +43,32 @@ def main():
 	#linreg_test_loss = np.mean((linreg.predict(X_test) - Y_test) ** 2)
 
 	# Simulations
-	test_preds = []
+	#test_preds = []
 	train_residuals = []
 	test_residuals = []
-	with open("results/" + output_prefix + "_metrics.csv", "wb") as f:
+	with open(output_prefix + "_metrics.csv", "wb") as f:
 		writer = csv.writer(f, delimiter = ",")
 		for i in range(nsims):
 			print("Simulation: %d" % i)
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
-			train_mse, test_mse, train_r2, test_r2, train_time, test_time, w_norm, weights, test_pred, train_res, test_res = trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
+			# no w_norm, weights for now
+			train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res = trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			writer.writerow([train_mse, test_mse, train_r2, test_r2, train_time, test_time, w_norm])
-			test_preds.append(test_pred)
+			#test_preds.append(test_pred)
 			train_residuals.append(train_res)
 			test_residuals.append(test_res)
 
-	with open("results/" + output_prefix + "_test_preds.csv", "wb") as f:
-		writer = csv.writer(f, delimiter = ",")
-		for i in range(nsims):
-			writer.writerow(test_preds[i])
+	#with open(output_prefix + "_test_preds.csv", "wb") as f:
+	#	writer = csv.writer(f, delimiter = ",")
+	#	for i in range(nsims):
+	#		writer.writerow(test_preds[i])
 
-	with open("results/" + output_prefix + "_test_res.csv", "wb") as f:
+	with open(output_prefix + "_test_res.csv", "wb") as f:
 		writer = csv.writer(f, delimiter = ",")
 		for i in range(nsims):
 			writer.writerow(test_residuals[i])
 
-	with open("results/" + output_prefix + "_train_res.csv", "wb") as f:
+	with open(output_prefix + "_train_res.csv", "wb") as f:
 		writer = csv.writer(f, delimiter = ",")
 		for i in range(nsims):
 			writer.writerow(train_residuals[i])
@@ -79,7 +81,7 @@ def main():
 	test_preds = np.array(test_preds)
 	test_vars = np.var(test_preds, axis = 0)
 	pred_var = np.array([list(test_vars), list(test_mses), list(test_norms)]).transpose()
-	with open("results/" + output_prefix + "_pred_var.csv", "wb") as f:
+	with open(output_prefix + "_pred_var.csv", "wb") as f:
 		writer = csv.writer(f, delimiter = ",")
 		for i in range(ntrain):
 			writer.writerow(list(pred_var[i,:]))
