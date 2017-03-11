@@ -25,6 +25,14 @@ links = ["cubic", "sigmoid", "exp"]
 link = links[link_no]
 output_prefix = "noreg_" + link + "_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
 
+def link_fn(y, link):
+	if link == 'cubic':
+		return y**3
+	elif link == 'sigmoid':
+		return 1/(1 + np.exp(-y))
+	else: # exp
+		return np.exp(y)
+
 def main():
 	print("Data dim: %d" % p)
 	print("Trainset size: %d" % ntrain)
@@ -34,10 +42,12 @@ def main():
 	output = []
 
 	# Data
-	X_train = np.load("data/X_train_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
-	Y_train = np.load("data/Y_train_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
-	X_test = np.load("data/X_test_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
-	Y_test = np.load("data/Y_test_p" + str(p) + "_n" + str(ntrain) + "_" + link + ".npy")
+	X_train = np.load("data/X_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_train = np.load("data/Y_train_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_train = np.array([link_fn(y, link) for y in Y_train])
+	X_test = np.load("data/X_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_test = np.load("data/Y_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
+	Y_test = np.array([link_fn(y, link) for y in Y_test])
 
 	# Compare to linear reg (can do this separately)
 	#linreg = linear_model.LinearRegression()
