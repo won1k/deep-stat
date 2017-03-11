@@ -12,9 +12,9 @@ KERAS_BACKEND=tensorflow python -c "from keras import backend"
 
 #THEANO_FLAGS=device=gpu,floatX=float32 python my_keras_script.py
 
-for n in 100000
+for n in 10000 #1000 10000 100000
 do
-	for p in 10 100 1000
+	for p in 1000 # 10 100 1000
 	do
 		printf "Num. train : %d  ,  Data dim. : %d" $n $p
 		python main.py $n $p
