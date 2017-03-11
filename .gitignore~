@@ -1,6 +1,5 @@
+data/
 writeup/
-lin-reg/data/
 lin-reg/results/
-non-reg/data/
 non-reg/results/
 *.pyc
