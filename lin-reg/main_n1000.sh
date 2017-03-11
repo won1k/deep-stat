@@ -4,8 +4,8 @@
 #SBATCH -t 3-00:10              # Runtime in D-HH:MM
 #SBATCH -p unrestricted          # Partition to submit to
 #SBATCH --mem=20000               # Memory pool for all cores (see also --mem-per-cpu)
-#SBATCH -o log_n1000      # File to which STDOUT will be written
-#SBATCH -e err_n1000      # File to which STDERR will be written
+#SBATCH -o log/log_n1000      # File to which STDOUT will be written
+#SBATCH -e err/err_n1000      # File to which STDERR will be written
 
 source activate deepstat
 #module load keras
