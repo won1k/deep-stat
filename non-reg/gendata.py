@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.random as rand
+import cPickle
 
 # Settings
 ntrain = [1000, 10000, 100000]
