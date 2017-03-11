@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.random as rand
+import cPickle
 
 # Settings
 ntrain = [1000, 10000, 100000] # , 100000]
@@ -9,7 +10,7 @@ beta = [rand.normal(size = n) for n in data_dim]
 sigma = 10
 
 # Save betas
-np.save("data/betas", beta)
+cPickle.dump(beta, open("data/betas.p", "wb"))
 
 # True function
 def true_function(x, link):
