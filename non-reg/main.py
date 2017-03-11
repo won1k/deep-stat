@@ -2,6 +2,7 @@ import numpy as np
 from model import model
 import csv
 import sys
+import os
 #import theano
 
 from sklearn import linear_model
@@ -23,7 +24,7 @@ nepochs = 800
 
 links = ["cubic", "sigmoid", "exp"]
 link = links[link_no]
-data_prefix = "~/deep-stat/data/"
+data_prefix = os.path.expanduser("~/deep-stat/data/")
 output_prefix = "results/noreg_" + link + "_p" + str(p) + "_n" + str(ntrain) + "_l" + str(learning_rate) + "_T" + str(nepochs)
 
 def link_fn(y, link):
