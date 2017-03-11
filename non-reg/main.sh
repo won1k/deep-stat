@@ -7,8 +7,9 @@
 #SBATCH -o log      # File to which STDOUT will be written
 #SBATCH -e err      # File to which STDERR will be written
 
-source activate NLP
-KERAS_BACKEND=tensorflow python -c "from keras import backend"
+#source activate NLP
+module load keras
+#KERAS_BACKEND=tensorflow python -c "from keras import backend"
 
 #THEANO_FLAGS=device=gpu,floatX=float32 python my_keras_script.py
 
@@ -18,7 +19,7 @@ do
 	do
 		for l in 0 1 2
 		do
-			printf "Num. train : %d  ,  Data dim. : %d  ,  Link fn. : %d" $n $p $l
+			printf "Num. train : %d  ,  Data dim. : %d  ,  Link fn. : %d\n" $n $p $l
 			python main.py $n $p $l
 		done
 	done
