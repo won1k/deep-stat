@@ -42,4 +42,4 @@ def trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, n, learning_rate 
 	#      % np.mean((linreg.predict(X_test) - Y_test) ** 2))
 
 	# Return
-	return train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res #, test_preds, w_norm, weights
+	return train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res, test_preds#, w_norm, weights
