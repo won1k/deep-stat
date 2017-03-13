@@ -58,7 +58,7 @@ def main():
 	#linreg_test_loss = np.mean((linreg.predict(X_test) - Y_test) ** 2)
 
 	# Simulations
-	#test_preds = []
+	test_preds = []
 	train_residuals = []
 	test_residuals = []
 	with open(output_prefix + "_metrics.csv", "wb") as f:
@@ -67,9 +67,9 @@ def main():
 			print("Simulation: %d" % i)
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			# no weights for now
-			train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res, test_preds = trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
+			train_mse, test_mse, train_r2, test_r2, train_time, test_time, train_res, test_res, test_pred = trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			writer.writerow([train_mse, test_mse, train_r2, test_r2, train_time, test_time])#, w_norm])
-			#test_preds.append(test_pred)
+			test_preds.append(test_pred)
 			train_residuals.append(train_res)
 			test_residuals.append(test_res)
 

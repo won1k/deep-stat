@@ -1,7 +1,7 @@
 # Setup
 library(ggplot2)
 library(gridExtra)
-setwd("~/Projects/deep-stat/lin-reg/results")
+setwd("~/Projects/deep-stat")
 
 
 # Prediction variance vs norm plots
@@ -62,9 +62,21 @@ train_res = read.csv("noreg_p10_n10000_l0.005_T800_train_res.csv", header = FALS
 hist(train_res[50,], breaks = 50)
 hist(as.vector(as.matrix(train_res)), breaks = 100)
 
-test_res = read.csv("noreg_p10_n100_l0.005_T800_test_res.csv", header = FALSE)
-hist(as.numeric(test_res[5,]), breaks = 20)
+test_res = read.csv("non-reg/results/noreg_sigmoid_p10_n1000_l0.005_T800_test_res.csv", header = FALSE)
+hist(as.numeric(test_res[5,]), breaks = 30)
 plot(density(test_res[,5]))
+
+# Histogram overlaid with kernel density curve
+res = data.frame(matrix(c(rep("A",1000),rep("B",1000),test_res[,25],test_res[,975]), ncol=2))
+res$X2 = as.numeric(as.character(res$X2))
+ggplot(test_res, aes(x=test_res[,25])) + geom_histogram(aes(y=..density..), # Histogram with density instead of count on y-axis
+                 binwidth=.01, alpha=0.5, fill = "white", color = "black") +
+  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+
+ggplot(res, aes(x=X2, fill=X1)) +
+  geom_histogram(binwidth=.01, alpha=.5, position="identity", aes(y = ..density..)) +
+  geom_density(alpha=.2)
+
 hist(test_res[,25], breaks = 30)
 hist(test_res[,50], breaks = 30)
 hist(test_res[,75], breaks = 30)
