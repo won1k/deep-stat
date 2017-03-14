@@ -134,3 +134,5 @@ def main():
 		writer = csv.writer(f, delimiter = ",")
 		for row in output:
 			writer.writerow(row)
+
+main()
