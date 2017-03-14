@@ -42,7 +42,7 @@ def main():
 	linreg = linear_model.LinearRegression()
 	start_time = time.time()
 	linreg.fit(X_train, Y_train)
-	linreg_train_time = time.time() - start_time()
+	linreg_train_time = time.time() - start_time
 	linreg_train_mse = np.mean((linreg.predict(X_train) - Y_train) ** 2)
 	linreg_test_mse = np.mean((linreg.predict(X_test) - Y_test) ** 2)
 	linreg_train_r2 = linreg.score(X_train, Y_train)
@@ -81,7 +81,7 @@ def main():
 		l1reg = linear_model.Lasso(alpha = lamb)
 		start_time = time.time()
 		l1reg.fit(X_train, Y_train)
-		l1reg_train_time = time.time() - start_time()
+		l1reg_train_time = time.time() - start_time
 		l1reg_train_mse = np.mean((l1reg.predict(X_train) - Y_train) ** 2)
 		l1reg_test_mse = np.mean((l1reg.predict(X_test) - Y_test) ** 2)
 		l1reg_train_r2 = l1reg.score(X_train, Y_train)
@@ -94,7 +94,7 @@ def main():
 		l2reg = linear_model.Ridge(alpha = lamb)
 		start_time = time.time()
 		l2reg.fit(X_train, Y_train)
-		l2reg_train_time = time.time() - start_time()
+		l2reg_train_time = time.time() - start_time
 		l2reg_train_mse = np.mean((l2reg.predict(X_train) - Y_train) ** 2)
 		l2reg_test_mse = np.mean((l2reg.predict(X_test) - Y_test) ** 2)
 		l2reg_train_r2 = l2reg.score(X_train, Y_train)
