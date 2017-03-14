@@ -7,3 +7,4 @@ non-reg/results/
 non-reg/log/
 non-reg/err/
 *.pyc
+**/*.pyc

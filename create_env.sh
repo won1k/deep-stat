@@ -7,3 +7,4 @@ pip install tensorflow
 
 #apt-get install python-numpy python-scipy python-dev python-pip python-nose g++ libopenblas-dev git
 pip install --upgrade Theano
+

@@ -3,8 +3,10 @@ writeup/
 lin-reg/results/
 lin-reg/log/
 lin-reg/err/
+lin-reg/plots/
 non-reg/results/
 non-reg/log/
 non-reg/err/
+non-reg/plots/
 *.pyc
 **/*.pyc

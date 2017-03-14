@@ -5,7 +5,7 @@ setwd("~/Projects/deep-stat")
 
 
 # Prediction variance vs norm plots
-prefix = "noreg_p"
+prefix = "lin-reg/results/noreg_p"
 suffix = "_l0.005_T800_pred_var.csv"
 ps = c(10, 100, 1000)
 ns = c(100, 1000, 10000)
@@ -20,11 +20,13 @@ for (p in ps) {
     colnames(predvar) = c("test.var", "test.mse", "test.norm")
     if (n < p*10) {
       c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 0.1) +
-        labs(x = "Dist. of x* from x.bar", y = "Prediction Variance")
+        labs(x = "Dist. of X* from Training Mean", y = "Prediction Variance",
+             title = paste("p = ",p,", n = ",n,sep = ""))
       plots[[length(plots) + 1]] = c
     } else {
       c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.5, color = "black") + geom_point(alpha = 0.2) +
-        labs(x = "Dist. of x* from x.bar", y = "Prediction Variance")
+        labs(x = "Dist. of X* from Training Mean", y = "Prediction Variance",
+             title = paste("p = ",p,", n = ",n,sep = ""))
       plots[[length(plots) + 1]] = c
     }
   }
@@ -36,7 +38,7 @@ do.call(grid.arrange, c(plots, list(ncol = 3)))
 
 
 
-predvar = read.csv("noreg_p10_n1000_l0.005_T800_pred_var.csv", header = FALSE)
+predvar = read.csv("non-reg/results/noreg_cubic_p10_n1000_l0.005_T800_pred_var.csv", header = FALSE)
 colnames(predvar) = c("test.var", "test.mse", "test.norm")
 #hist(predvar[,3], breaks = 20)
 #plot(predvar[,3], predvar[,1], xlab = "Dist. of x* from x.bar", ylab = "Prediction Variance",
@@ -53,8 +55,13 @@ c + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 
 #lines(lowess(predvar[,3], predvar[,1]), col = "red")
 
 # Metrics
-metrics = read.csv("noreg_p10_n10000_l0.005_T800_metrics.csv", header = FALSE)
-hist(metrics[,2], breaks = 50)
+metrics = read.csv("lin-reg/results/noreg_p10_n10000_l0.005_T800_metrics.csv", header = FALSE)
+hist(metrics[,1], breaks = 50)
+mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
+mses$X2 = as.numeric(as.character(mses$X2))
+colnames(mses) = c("Dataset","MSE")
+ggplot(mses, aes(x=MSE, fill=Dataset)) +
+  geom_histogram(bins = 100, alpha=.5, position="identity", aes(y = ..density..)) #+ geom_density(alpha=0)
 
 
 # Residuals
@@ -66,12 +73,12 @@ test_res = read.csv("non-reg/results/noreg_sigmoid_p10_n1000_l0.005_T800_test_re
 hist(as.numeric(test_res[5,]), breaks = 30)
 plot(density(test_res[,5]))
 
-# Histogram overlaid with kernel density curve
+# Residuals histogramistogram overlaid with kernel density curve
 res = data.frame(matrix(c(rep("A",1000),rep("B",1000),test_res[,25],test_res[,975]), ncol=2))
 res$X2 = as.numeric(as.character(res$X2))
-ggplot(test_res, aes(x=test_res[,25])) + geom_histogram(aes(y=..density..), # Histogram with density instead of count on y-axis
+ggplot(test_res, aes(x=test_res[,750])) + geom_histogram(aes(y=..density..), # Histogram with density instead of count on y-axis
                  binwidth=.01, alpha=0.5, fill = "white", color = "black") +
-  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot
+  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot GOOD!!
 
 ggplot(res, aes(x=X2, fill=X1)) +
   geom_histogram(binwidth=.01, alpha=.5, position="identity", aes(y = ..density..)) +
