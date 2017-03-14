@@ -38,6 +38,7 @@ def main():
 	Y_test = np.load(data_prefix + "Y_test_p" + str(p) + "_n" + str(ntrain) + ".npy")
 
 	# Linear regression
+	print("LinearRegression")
 	linreg = linear_model.LinearRegression()
 	start_time = time.time()
 	linreg.fit(X_train, Y_train)
@@ -49,6 +50,7 @@ def main():
 	output.append(["LinearRegression", 0, linreg_train_mse, linreg_test_mse, linreg_train_r2, linreg_test_r2, linreg_train_time])
 
 	# Splines
+	print("MARS")
 	spline = Earth(enable_pruning = True)
 	start_time = time.time()
 	spline.fit(X_train, Y_train)
@@ -61,6 +63,7 @@ def main():
 
 
 	# Poly. regression
+	print("Polynomial")
 	polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
 	                   ('linear', linear_model.LinearRegression(fit_intercept=False))])
 	start_time = time.time()
@@ -73,6 +76,7 @@ def main():
 	output.append(["Polynomial", 0, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
 
 	# Linear + L1
+	print("Lasso")
 	for lamb in [0.1, 1.0, 10.0]:
 		l1reg = linear_model.Lasso(alpha = lamb)
 		start_time = time.time()
@@ -85,6 +89,7 @@ def main():
 		output.append(["Lasso", lamb, l1reg_train_mse, l1reg_test_mse, l1reg_train_r2, l1reg_test_r2, l1reg_train_time])
 
 	# Linear + L2
+	print("Ridge")
 	for lamb in [0.1, 1.0, 10.0]:
 		l2reg = linear_model.Ridge(alpha = lamb)
 		start_time = time.time()
@@ -97,6 +102,7 @@ def main():
 		output.append(["Ridge", lamb, l2reg_train_mse, l2reg_test_mse, l2reg_train_r2, l2reg_test_r2, l2reg_train_time])
 
 	# Poly. + L1
+	print("PolyLasso")
 	for lamb in [0.1, 1.0, 10.0]:
 		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
 	                   ('lasso', linear_model.Lasso(fit_intercept=False, alpha = lamb))])
@@ -107,9 +113,10 @@ def main():
 		polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
 		polyreg_train_r2 = polyreg.score(X_train, Y_train)
 		polyreg_test_r2 = polyreg.score(X_test, Y_test)
-		output.append(["Polynomial", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+		output.append(["PolyLasso", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
 
 	# Poly. + L2
+	print("PolyRidge")
 	for lamb in [0.1, 1.0, 10.0]:
 		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
 	                   ('ridge', linear_model.Ridge(fit_intercept=False, alpha = lamb))])
@@ -120,7 +127,7 @@ def main():
 		polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
 		polyreg_train_r2 = polyreg.score(X_train, Y_train)
 		polyreg_test_r2 = polyreg.score(X_test, Y_test)
-		output.append(["Polynomial", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+		output.append(["PolyRidge", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
 
 	# Save output
 	with open(output_file, "wb") as f:
