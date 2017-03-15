@@ -48,6 +48,9 @@ def main():
 	linreg_train_r2 = linreg.score(X_train, Y_train)
 	linreg_test_r2 = linreg.score(X_test, Y_test)
 	output.append(["LinearRegression", 0, linreg_train_mse, linreg_test_mse, linreg_train_r2, linreg_test_r2, linreg_train_time])
+	del linreg
+	gc.collect()
+	del gc.garbage[:]
 
 	# Splines
 	print("MARS")
@@ -60,6 +63,9 @@ def main():
 	spline_train_r2 = metrics.r2_score(Y_train, spline.predict(X_train))
 	spline_test_r2 = metrics.r2_score(Y_test, spline.predict(X_test))
 	output.append(["MARS", 0, spline_train_mse, spline_test_mse, spline_train_r2, spline_test_r2, spline_train_time])
+	del spline
+	gc.collect()
+	del gc.garbage[:]
 
 
 	# Poly. regression
@@ -74,6 +80,9 @@ def main():
 	polyreg_train_r2 = polyreg.score(X_train, Y_train)
 	polyreg_test_r2 = polyreg.score(X_test, Y_test)
 	output.append(["Polynomial", 0, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+	del polyreg
+	gc.collect()
+	del gc.garbage[:]
 
 	# Linear + L1
 	print("Lasso")
@@ -87,6 +96,9 @@ def main():
 		l1reg_train_r2 = l1reg.score(X_train, Y_train)
 		l1reg_test_r2 = l1reg.score(X_test, Y_test)
 		output.append(["Lasso", lamb, l1reg_train_mse, l1reg_test_mse, l1reg_train_r2, l1reg_test_r2, l1reg_train_time])
+		del l1reg
+		gc.collect()
+		del gc.garbage[:]
 
 	# Linear + L2
 	print("Ridge")
@@ -100,6 +112,9 @@ def main():
 		l2reg_train_r2 = l2reg.score(X_train, Y_train)
 		l2reg_test_r2 = l2reg.score(X_test, Y_test)
 		output.append(["Ridge", lamb, l2reg_train_mse, l2reg_test_mse, l2reg_train_r2, l2reg_test_r2, l2reg_train_time])
+		del l2reg
+		gc.collect()
+		del gc.garbage[:]
 
 	# Poly. + L1
 	print("PolyLasso")
@@ -114,6 +129,9 @@ def main():
 		polyreg_train_r2 = polyreg.score(X_train, Y_train)
 		polyreg_test_r2 = polyreg.score(X_test, Y_test)
 		output.append(["PolyLasso", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+		del polyreg
+		gc.collect()
+		del gc.garbage[:]
 
 	# Poly. + L2
 	print("PolyRidge")
@@ -128,6 +146,9 @@ def main():
 		polyreg_train_r2 = polyreg.score(X_train, Y_train)
 		polyreg_test_r2 = polyreg.score(X_test, Y_test)
 		output.append(["PolyRidge", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+		del polyreg
+		gc.collect()
+		del gc.garbage[:]
 
 	# Save output
 	with open(output_file, "wb") as f:
