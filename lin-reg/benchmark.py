@@ -27,9 +27,9 @@ data_prefix = os.path.expanduser("~/deep-stat/data/")
 output_file = "results/benchmarks" + "_p" + str(p) + "_n" + str(ntrain) + ".csv"
 
 def main():
-	if n < 50*p:
+	if ntrain < 50*p:
 		return
-		
+
 	print("Data dim: %d" % p)
 	print("Trainset size: %d" % ntrain)
 	#print(theano.config.device)
