@@ -3,6 +3,7 @@ import csv
 import sys
 import os
 import time
+import gc
 
 from sklearn import linear_model
 from sklearn import metrics
@@ -13,6 +14,7 @@ from pyearth import Earth
 # Settings
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
 p = int(sys.argv[2]) # [10, 100, 1000]
+gc.enable()
 
 # Hyperparameters
 hid_dim = 50
