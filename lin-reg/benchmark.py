@@ -51,7 +51,7 @@ def main():
 
 	# Splines
 	print("MARS")
-	spline = Earth(enable_pruning = True, max_degree = 3)
+	spline = Earth(enable_pruning = True)
 	start_time = time.time()
 	spline.fit(X_train, Y_train)
 	spline_train_time = time.time() - start_time
