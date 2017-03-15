@@ -3,7 +3,7 @@
 #SBATCH -N 1                    # Ensure that all cores are on one machine
 #SBATCH -t 2-5:10              # Runtime in D-HH:MM
 #SBATCH -p stats         # Partition to submit to
-#SBATCH --mem=50000               # Memory pool for all cores (see also --mem-per-cpu)
+#SBATCH --mem=60000               # Memory pool for all cores (see also --mem-per-cpu)
 #SBATCH -o log/log_bench     # File to which STDOUT will be written
 #SBATCH -e err/err_bench      # File to which STDERR will be written
 
