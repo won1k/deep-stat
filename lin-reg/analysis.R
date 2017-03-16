@@ -1,10 +1,11 @@
 # Setup
 library(ggplot2)
+library(scales)
 library(gridExtra)
 setwd("~/Projects/deep-stat")
 
 
-# Prediction variance vs norm plots
+# Prediction variance vs norm plots (GOOD)
 prefix = "lin-reg/results/noreg_p"
 suffix = "_l0.005_T800_pred_var.csv"
 ps = c(10, 100, 1000)
@@ -55,13 +56,74 @@ c + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 
 #lines(lowess(predvar[,3], predvar[,1]), col = "red")
 
 # Metrics
-metrics = read.csv("lin-reg/results/noreg_p10_n10000_l0.005_T800_metrics.csv", header = FALSE)
+labels = c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o")
+colors = c("a" = "red", "b" = "turquoise", "c" = "greenyellow", "d" = "tomato", "e" = "tomato1",
+           "f" = "tomato2", "g" = "indianred", "h" = "indianred1", "i" = "indianred2",
+           "j" = "seagreen", "k" = "seagreen1", "l" = "seagreen2",
+           "m" = "chartreuse", "n" = "chartreuse1", "o" = "chartreuse2")
+ltypes = c("a" = "dotted", "b" = "dotted", "c" = "dotted", "d" = "dotted", "e" = "dotted",
+           "f" = "dotted", "g" = "dotted", "h" = "dotted", "i" = "dotted",
+           "j" = "dotted", "k" = "dotted", "l" = "dotted",
+           "m" = "dotted", "n" = "dotted", "o" = "dotted")
+metrics = read.csv("lin-reg/results/noreg_p10_n1000_l0.005_T800_metrics.csv", header = FALSE)
+benchmarks = read.csv("lin-reg/results/benchmarks_p10_n1000.csv", header = FALSE)
+benchmarks$V1 = as.character(benchmarks$V1)
 hist(metrics[,1], breaks = 50)
 mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
 mses$X2 = as.numeric(as.character(mses$X2))
 colnames(mses) = c("Dataset","MSE")
 ggplot(mses, aes(x=MSE, fill=Dataset)) +
   geom_histogram(bins = 100, alpha=.5, position="identity", aes(y = ..density..)) #+ geom_density(alpha=0)
+# Test MSE
+p = ggplot(metrics, aes(x=metrics[,2])) + geom_histogram(aes(y=..density..),
+                    binwidth=.005, alpha=0.4, fill = "white", color = "grey") +
+  geom_density(alpha=.2, fill="deepskyblue1")  + xlim(min(benchmarks$V4), max(metrics[,2]))
+# Overlay with transparent density plot GOOD!!
+for (i in 1:nrow(benchmarks)) {
+  p = p + geom_vline(aes(linetype = labels[i], colour = labels[i], 
+                         xintercept = benchmarks$V4[i]), show_guide = TRUE)
+}
+p = p + scale_colour_manual(name="Legend", values = colors) +
+  scale_linetype_manual(name="Legend", values = ltypes) +
+  theme_gray(base_size = 18)
+print(p)
+
+# Test MSE Histogram (GOOD) - make for n,p combo
+png(filename = "lin-reg/plots/test_mse_hist_p10_n10000.png")
+hist(metrics[,2], breaks = 50, freq = FALSE, xlab = "Test MSE", main = "", lty = 0, 
+     xlim = c(min(benchmarks$V4), max(metrics[,2])),
+     col = rgb(0,0,0,alpha=0.1) )
+lines(density(metrics[,2]), lty = 1)
+labs = c()
+for (i in 1:nrow(benchmarks)) {
+  abline(v = benchmarks$V4[i], col = colors[i], lwd = 1.5, lty = 2)
+  if (benchmarks$V2[i] > 0) {
+    labs = c(labs, paste(benchmarks$V1[i],", alpha = ",toString(benchmarks$V2[i]),sep = ""))
+  } else {
+    labs = c(labs, toString(benchmarks$V1[i]))
+  }
+}
+legend("topright", legend = labs, lty = 1, col = colors)
+dev.off()
+
+# Test MSE Barplot (GOOD) -- make for every n,p combo
+total = rbind(benchmarks, c("MLP", 0, mean(metrics[,1]), mean(metrics[,2]),
+                                 mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
+total$id = 1:nrow(total)
+total$SD = c(rep(NA, nrow(total)-1), sd(metrics[,2]))
+rmrow = c(5,6,8,9,11,12,14,15)
+total = total[-rmrow,]
+total$V1 <- factor(total$V1, levels = total$V1[order(total$id)])
+total$V4 = as.numeric(total$V4)
+colnames(total) = c("Model","Alpha","TrainMSE","TestMSE","TrainR2","TestR2","TrainTime","SD")
+limits = aes(ymax = TestMSE + SD, ymin = TestMSE - SD)
+ggplot(data=total, aes(x=Model, y=TestMSE, fill=Model)) +
+  geom_bar(stat="identity", colour="black") + 
+  geom_errorbar(limits, width = 0.25) +
+  scale_y_continuous(name="Test MSE", limits=c(0,max(total$TestMSE)+0.1), oob=rescale_none) + 
+  xlab("Model") #+ guide_legend(title = "Legend")
+
+
 
 
 # Residuals
