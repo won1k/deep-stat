@@ -22,5 +22,6 @@ do
 		do
 			printf "Num. train : %d  ,  Data dim. : %d  ,  Link no. : %d\n" $n $p $l
 			python benchmark.py $n $p $l
+		done
 	done
 done
