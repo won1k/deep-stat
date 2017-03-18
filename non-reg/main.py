@@ -13,7 +13,10 @@ from train_test import trainAndTest
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
 p = int(sys.argv[2]) # [10, 100, 1000]
 link_no = int(sys.argv[3])
-nsims = 1000
+if ntrain == 1000 or ntrain == 10000:
+	nsims = 1000
+else:
+	nsims = 100
 
 # Hyperparameters
 hid_dim = 50
