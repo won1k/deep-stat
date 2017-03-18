@@ -65,12 +65,12 @@ ltypes = c("a" = "dotted", "b" = "dotted", "c" = "dotted", "d" = "dotted", "e" =
            "f" = "dotted", "g" = "dotted", "h" = "dotted", "i" = "dotted",
            "j" = "dotted", "k" = "dotted", "l" = "dotted",
            "m" = "dotted", "n" = "dotted", "o" = "dotted")
-metrics = read.csv("lin-reg/results/noreg_p10_n1000_l0.005_T800_metrics.csv", header = FALSE)
-benchmarks = read.csv("lin-reg/results/benchmarks_p10_n1000.csv", header = FALSE)
+metrics = read.csv("lin-reg/results/noreg_p100_n10000_l0.005_T800_metrics.csv", header = FALSE)
+benchmarks = read.csv("lin-reg/results/benchmarks_p100_n10000.csv", header = FALSE)
 benchmarks$V1 = as.character(benchmarks$V1)
-hist(metrics[,1], breaks = 50)
-mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
-mses$X2 = as.numeric(as.character(mses$X2))
+#hist(metrics[,1], breaks = 50)
+#mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
+#mses$X2 = as.numeric(as.character(mses$X2))
 colnames(mses) = c("Dataset","MSE")
 ggplot(mses, aes(x=MSE, fill=Dataset)) +
   geom_histogram(bins = 100, alpha=.5, position="identity", aes(y = ..density..)) #+ geom_density(alpha=0)
@@ -115,7 +115,7 @@ rmrow = c(5,6,8,9,11,12,14,15)
 total = total[-rmrow,]
 total$V1 <- factor(total$V1, levels = total$V1[order(total$id)])
 total$V4 = as.numeric(total$V4)
-colnames(total) = c("Model","Alpha","TrainMSE","TestMSE","TrainR2","TestR2","TrainTime","SD")
+colnames(total) = c("Model","Alpha","TrainMSE","TestMSE","TrainR2","TestR2","TrainTime","id","SD")
 limits = aes(ymax = TestMSE + SD, ymin = TestMSE - SD)
 ggplot(data=total, aes(x=Model, y=TestMSE, fill=Model)) +
   geom_bar(stat="identity", colour="black") + 
@@ -123,7 +123,15 @@ ggplot(data=total, aes(x=Model, y=TestMSE, fill=Model)) +
   scale_y_continuous(name="Test MSE", limits=c(0,max(total$TestMSE)+0.1), oob=rescale_none) + 
   xlab("Model") #+ guide_legend(title = "Legend")
 
-
+# Train MSE Barplot (GOOD)
+total$TrainSD = c(rep(NA, nrow(total)-1), sd(metrics[,1]))
+total$TrainMSE = as.numeric(total$TrainMSE)
+limits = aes(ymax = TrainMSE + TrainSD, ymin = TrainMSE - TrainSD)
+ggplot(data=total, aes(x=Model, y=TrainMSE, fill=Model)) +
+  geom_bar(stat="identity", colour="black") + 
+  geom_errorbar(limits, width = 0.25) +
+  scale_y_continuous(name="Train MSE", limits=c(0,max(total$TrainMSE)+0.1), oob=rescale_none) + 
+  xlab("Model") #+ guide_legend(title = "Legend")
 
 
 # Residuals
