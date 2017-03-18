@@ -14,9 +14,9 @@ source activate deepstat
 
 #THEANO_FLAGS=device=gpu,floatX=float32 python my_keras_script.py
 
-for n in 100000
+for n in 100000 # 1000 10000
 do
-	for p in 100 1000
+	for p in 100 1000 # 10
 	do
 		printf "Num. train : %d  ,  Data dim. : %d\n" $n $p
 		python benchmark.py $n $p
