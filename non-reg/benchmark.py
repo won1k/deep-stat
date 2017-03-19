@@ -88,20 +88,21 @@ def main():
 
 
 	# Poly. regression
+	if p < 10**5:
 	print("Polynomial")
-	polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
-	                   ('linear', linear_model.LinearRegression(fit_intercept=False))])
-	start_time = time.time()
-	polyreg.fit(X_train, Y_train)
-	polyreg_train_time = time.time() - start_time
-	polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
-	polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
-	polyreg_train_r2 = polyreg.score(X_train, Y_train)
-	polyreg_test_r2 = polyreg.score(X_test, Y_test)
-	output.append(["Polynomial", 0, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
-	del polyreg
-	gc.collect()
-	del gc.garbage[:]
+		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
+		                   ('linear', linear_model.LinearRegression(fit_intercept=False))])
+		start_time = time.time()
+		polyreg.fit(X_train, Y_train)
+		polyreg_train_time = time.time() - start_time
+		polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
+		polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
+		polyreg_train_r2 = polyreg.score(X_train, Y_train)
+		polyreg_test_r2 = polyreg.score(X_test, Y_test)
+		output.append(["Polynomial", 0, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+		del polyreg
+		gc.collect()
+		del gc.garbage[:]
 
 	# Linear + L1
 	print("Lasso")
@@ -136,38 +137,40 @@ def main():
 		del gc.garbage[:]
 
 	# Poly. + L1
-	print("PolyLasso")
-	for lamb in [0.1, 1.0, 10.0]:
-		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
-	                   ('lasso', linear_model.Lasso(fit_intercept=False, alpha = lamb))])
-		start_time = time.time()
-		polyreg.fit(X_train, Y_train)
-		polyreg_train_time = time.time() - start_time
-		polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
-		polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
-		polyreg_train_r2 = polyreg.score(X_train, Y_train)
-		polyreg_test_r2 = polyreg.score(X_test, Y_test)
-		output.append(["PolyLasso", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
-		del polyreg
-		gc.collect()
-		del gc.garbage[:]
+	if p < 10**5:
+		print("PolyLasso")
+		for lamb in [0.1, 1.0, 10.0]:
+			polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
+		                   ('lasso', linear_model.Lasso(fit_intercept=False, alpha = lamb))])
+			start_time = time.time()
+			polyreg.fit(X_train, Y_train)
+			polyreg_train_time = time.time() - start_time
+			polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
+			polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
+			polyreg_train_r2 = polyreg.score(X_train, Y_train)
+			polyreg_test_r2 = polyreg.score(X_test, Y_test)
+			output.append(["PolyLasso", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+			del polyreg
+			gc.collect()
+			del gc.garbage[:]
 
 	# Poly. + L2
-	print("PolyRidge")
-	for lamb in [0.1, 1.0, 10.0]:
-		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
-	                   ('ridge', linear_model.Ridge(fit_intercept=False, alpha = lamb))])
-		start_time = time.time()
-		polyreg.fit(X_train, Y_train)
-		polyreg_train_time = time.time() - start_time
-		polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
-		polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
-		polyreg_train_r2 = polyreg.score(X_train, Y_train)
-		polyreg_test_r2 = polyreg.score(X_test, Y_test)
-		output.append(["PolyRidge", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
-		del polyreg
-		gc.collect()
-		del gc.garbage[:]
+	if p < 10**5:
+		print("PolyRidge")
+		for lamb in [0.1, 1.0, 10.0]:
+			polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
+		                   ('ridge', linear_model.Ridge(fit_intercept=False, alpha = lamb))])
+			start_time = time.time()
+			polyreg.fit(X_train, Y_train)
+			polyreg_train_time = time.time() - start_time
+			polyreg_train_mse = np.mean((polyreg.predict(X_train) - Y_train) ** 2)
+			polyreg_test_mse = np.mean((polyreg.predict(X_test) - Y_test) ** 2)
+			polyreg_train_r2 = polyreg.score(X_train, Y_train)
+			polyreg_test_r2 = polyreg.score(X_test, Y_test)
+			output.append(["PolyRidge", lamb, polyreg_train_mse, polyreg_test_mse, polyreg_train_r2, polyreg_test_r2, polyreg_train_time])
+			del polyreg
+			gc.collect()
+			del gc.garbage[:]
 
 	# Save output
 	with open(output_file, "wb") as f:
