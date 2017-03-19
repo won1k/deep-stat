@@ -55,23 +55,28 @@ c + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 
 #points(predvar[,3], predvar[,1], pch = 16, cex = 0.5)
 #lines(lowess(predvar[,3], predvar[,1]), col = "red")
 
+
+
+
+
+
 # Metrics
-labels = c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o")
-colors = c("a" = "red", "b" = "turquoise", "c" = "greenyellow", "d" = "tomato", "e" = "tomato1",
-           "f" = "tomato2", "g" = "indianred", "h" = "indianred1", "i" = "indianred2",
-           "j" = "seagreen", "k" = "seagreen1", "l" = "seagreen2",
-           "m" = "chartreuse", "n" = "chartreuse1", "o" = "chartreuse2")
-ltypes = c("a" = "dotted", "b" = "dotted", "c" = "dotted", "d" = "dotted", "e" = "dotted",
-           "f" = "dotted", "g" = "dotted", "h" = "dotted", "i" = "dotted",
-           "j" = "dotted", "k" = "dotted", "l" = "dotted",
-           "m" = "dotted", "n" = "dotted", "o" = "dotted")
-metrics = read.csv("lin-reg/results/noreg_p100_n10000_l0.005_T800_metrics.csv", header = FALSE)
-benchmarks = read.csv("lin-reg/results/benchmarks_p100_n10000.csv", header = FALSE)
+#labels = c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o")
+#colors = c("a" = "red", "b" = "turquoise", "c" = "greenyellow", "d" = "tomato", "e" = "tomato1",
+#           "f" = "tomato2", "g" = "indianred", "h" = "indianred1", "i" = "indianred2",
+#           "j" = "seagreen", "k" = "seagreen1", "l" = "seagreen2",
+#           "m" = "chartreuse", "n" = "chartreuse1", "o" = "chartreuse2")
+#ltypes = c("a" = "dotted", "b" = "dotted", "c" = "dotted", "d" = "dotted", "e" = "dotted",
+#           "f" = "dotted", "g" = "dotted", "h" = "dotted", "i" = "dotted",
+#           "j" = "dotted", "k" = "dotted", "l" = "dotted",
+#           "m" = "dotted", "n" = "dotted", "o" = "dotted")
+metrics = read.csv("lin-reg/results/noreg_p10_n1000_l0.005_T800_metrics.csv", header = FALSE)
+benchmarks = read.csv("lin-reg/results/benchmarks_p10_n1000.csv", header = FALSE)
 benchmarks$V1 = as.character(benchmarks$V1)
 #hist(metrics[,1], breaks = 50)
 #mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
 #mses$X2 = as.numeric(as.character(mses$X2))
-colnames(mses) = c("Dataset","MSE")
+#colnames(mses) = c("Dataset","MSE")
 ggplot(mses, aes(x=MSE, fill=Dataset)) +
   geom_histogram(bins = 100, alpha=.5, position="identity", aes(y = ..density..)) #+ geom_density(alpha=0)
 # Test MSE
@@ -107,7 +112,7 @@ legend("topright", legend = labs, lty = 1, col = colors)
 dev.off()
 
 # Test MSE Barplot (GOOD) -- make for every n,p combo
-total = rbind(benchmarks, c("MLP", 0, mean(metrics[,1]), mean(metrics[,2]),
+total = rbind(benchmarks, c("DNN", 0, mean(metrics[,1]), mean(metrics[,2]),
                                  mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
 total$id = 1:nrow(total)
 total$SD = c(rep(NA, nrow(total)-1), sd(metrics[,2]))
@@ -120,7 +125,7 @@ limits = aes(ymax = TestMSE + SD, ymin = TestMSE - SD)
 ggplot(data=total, aes(x=Model, y=TestMSE, fill=Model)) +
   geom_bar(stat="identity", colour="black") + 
   geom_errorbar(limits, width = 0.25) +
-  scale_y_continuous(name="Test MSE", limits=c(0,max(total$TestMSE)+0.1), oob=rescale_none) + 
+  scale_y_continuous(name="Test MSE", limits=c(0,min(c(max(total$TestMSE)+0.1),5)), oob=rescale_none) + 
   xlab("Model") #+ guide_legend(title = "Legend")
 
 # Train MSE Barplot (GOOD)
@@ -130,8 +135,35 @@ limits = aes(ymax = TrainMSE + TrainSD, ymin = TrainMSE - TrainSD)
 ggplot(data=total, aes(x=Model, y=TrainMSE, fill=Model)) +
   geom_bar(stat="identity", colour="black") + 
   geom_errorbar(limits, width = 0.25) +
-  scale_y_continuous(name="Train MSE", limits=c(0,max(total$TrainMSE)+0.1), oob=rescale_none) + 
+  scale_y_continuous(name="Train MSE", limits=c(0,min(c(max(total$TrainMSE)+0.1),5)), oob=rescale_none) + 
   xlab("Model") #+ guide_legend(title = "Legend")
+
+# Test R2 Barplot (GOOD)
+total$TestR2SD = c(rep(NA, nrow(total)-1), sd(metrics[,4]))
+total$TestR2 = as.numeric(total$TestR2)
+limits = aes(ymax = TestR2 + TestR2SD, ymin = TestR2 - TestR2SD)
+ggplot(data=total, aes(x=Model, y=TestR2, fill=Model)) +
+  geom_bar(stat="identity", colour="black") + 
+  geom_errorbar(limits, width = 0.25) +
+  scale_y_continuous(name="Test R2", limits=c(0.99,max(total$TestR2 + total$TestR2SD)), oob=rescale_none) + 
+  xlab("Model") #+ guide_legend(title = "Legend")
+
+# Train R2 Barplot (GOOD)
+total$TrainR2SD = c(rep(NA, nrow(total)-1), sd(metrics[,4]))
+total$TrainR2 = as.numeric(total$TrainR2)
+limits = aes(ymax = TrainR2 + TrainR2SD, ymin = TrainR2 - TrainR2SD)
+ggplot(data=total, aes(x=Model, y=TrainR2, fill=Model)) +
+  geom_bar(stat="identity", colour="black") + 
+  geom_errorbar(limits, width = 0.25) +
+  scale_y_continuous(name="Train R2", limits=c(0.99,max(total$TrainR2 + total$TrainR2SD)), oob=rescale_none) + 
+  xlab("Model") #+ guide_legend(title = "Legend")
+
+
+
+# Training Times
+library(xtable)
+total.print = total[,c("Model","TrainTime")]
+
 
 
 # Residuals
