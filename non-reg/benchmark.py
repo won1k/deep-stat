@@ -89,7 +89,7 @@ def main():
 
 	# Poly. regression
 	if p < 10**5:
-	print("Polynomial")
+		print("Polynomial")
 		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
 		                   ('linear', linear_model.LinearRegression(fit_intercept=False))])
 		start_time = time.time()
