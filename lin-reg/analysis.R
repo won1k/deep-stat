@@ -9,23 +9,29 @@ setwd("~/Projects/deep-stat")
 prefix = "lin-reg/results/noreg_p"
 suffix = "_l0.005_T800_pred_var.csv"
 ps = c(10, 100, 1000)
-ns = c(100, 1000, 10000)
+ns = c("1000", "10000", "100000")
 plots = list()
 for (p in ps) {
   for (n in ns) {
-    if (p == 1000 & n == 10000) {
+    data_file = paste(prefix,p,"_n",n,suffix,sep="")
+    if (!file.exists(data_file)) {
       next
     }
-    data_file = paste(prefix,p,"_n",n,suffix,sep="")
     predvar = read.csv(data_file, header = FALSE)
+    predvar = predvar[sample(1:n,min(ns)),]
     colnames(predvar) = c("test.var", "test.mse", "test.norm")
-    if (n < p*10) {
-      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 0.1) +
+    if (as.numeric(n) < p*50) {
+      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + 
+        stat_smooth(method=loess, alpha = 0.1, color = "grey") + 
+        geom_point(alpha = 0.1) +
+        #geom_point(alpha = 0.1, size = 3, stroke = 0, shape = ".") +
         labs(x = "Dist. of X* from Training Mean", y = "Prediction Variance",
              title = paste("p = ",p,", n = ",n,sep = ""))
       plots[[length(plots) + 1]] = c
     } else {
-      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + stat_smooth(method=loess, alpha = 0.5, color = "black") + geom_point(alpha = 0.2) +
+      c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + 
+        stat_smooth(method=loess, alpha = 0.5, color = "black") + 
+        geom_point(alpha = 0.2) +
         labs(x = "Dist. of X* from Training Mean", y = "Prediction Variance",
              title = paste("p = ",p,", n = ",n,sep = ""))
       plots[[length(plots) + 1]] = c
@@ -70,8 +76,8 @@ c + stat_smooth(method=loess, alpha = 0.1, color = "grey") + geom_point(alpha = 
 #           "f" = "dotted", "g" = "dotted", "h" = "dotted", "i" = "dotted",
 #           "j" = "dotted", "k" = "dotted", "l" = "dotted",
 #           "m" = "dotted", "n" = "dotted", "o" = "dotted")
-metrics = read.csv("lin-reg/results/noreg_p10_n1000_l0.005_T800_metrics.csv", header = FALSE)
-benchmarks = read.csv("lin-reg/results/benchmarks_p10_n1000.csv", header = FALSE)
+metrics = read.csv("lin-reg/results/noreg_p10_n100000_l0.005_T800_metrics.csv", header = FALSE)
+benchmarks = read.csv("lin-reg/results/benchmarks_p10_n100000.csv", header = FALSE)
 benchmarks$V1 = as.character(benchmarks$V1)
 #hist(metrics[,1], breaks = 50)
 #mses = data.frame(matrix(c(rep("Train",1000),rep("Test",1000),metrics[,1],metrics[,2]), ncol=2))
@@ -163,7 +169,7 @@ ggplot(data=total, aes(x=Model, y=TrainR2, fill=Model)) +
 # Training Times
 library(xtable)
 total.print = total[,c("Model","TrainTime")]
-
+xtable(total.print)
 
 
 # Residuals

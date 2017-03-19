@@ -15,7 +15,7 @@ p = int(sys.argv[2]) # [10, 100, 1000]
 if ntrain == 1000 or ntrain == 10000:
 	nsims = 1000
 else:
-	nsims = 100
+	nsims = 50
 
 # Hyperparameters
 hid_dim = 50
