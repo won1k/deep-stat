@@ -16,7 +16,7 @@ link_no = int(sys.argv[3])
 if ntrain == 1000 or ntrain == 10000:
 	nsims = 1000
 else:
-	nsims = 100
+	nsims = 30
 
 # Hyperparameters
 hid_dim = 50
