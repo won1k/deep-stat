@@ -16,7 +16,7 @@ source activate deepstat
 
 for n in 100000
 do
-	for p in 10 100 1000
+	for p in 1000
 	do
 		for l in 0 1 2
 		do
