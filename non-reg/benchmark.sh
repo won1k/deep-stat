@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -n 1                    # Number of cores
 #SBATCH -N 1                    # Ensure that all cores are on one machine
-#SBATCH -t 4-5:10              # Runtime in D-HH:MM
+#SBATCH -t 5-5:10              # Runtime in D-HH:MM
 #SBATCH -p stats         # Partition to submit to
 #SBATCH --mem=60000               # Memory pool for all cores (see also --mem-per-cpu)
 #SBATCH -o log/log_bench     # File to which STDOUT will be written
@@ -16,7 +16,7 @@ source activate deepstat
 
 for n in 100000
 do
-	for p in 10 100 1000
+	for p in 100 1000
 	do
 		for l in 0 1 2
 		do
