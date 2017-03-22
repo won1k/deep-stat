@@ -74,7 +74,7 @@ def main():
 
 
 	# Poly. regression
-	if n < 10**5:
+	if ntrain < 10**5:
 		print("Polynomial")
 		polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
 		                   ('linear', linear_model.LinearRegression(fit_intercept=False))])
@@ -123,7 +123,7 @@ def main():
 		del gc.garbage[:]
 
 	# Poly. + L1
-	if n < 10**5:
+	if ntrain < 10**5:
 		print("PolyLasso")
 		for lamb in [0.1, 1.0, 10.0]:
 			polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
@@ -141,7 +141,7 @@ def main():
 			del gc.garbage[:]
 
 	# Poly. + L2
-	if n < 10**5:
+	if ntrain < 10**5:
 		print("PolyRidge")
 		for lamb in [0.1, 1.0, 10.0]:
 			polyreg = Pipeline([('poly', PolynomialFeatures(degree=3)),
