@@ -12,6 +12,7 @@ from train_test import trainAndTest
 
 # Settings
 ntrain = int(sys.argv[1]) #[100, 1000, 10000, 100000]
+ntest = 10000
 p = 1000 # [10, 100, 1000]
 # if ntrain == 1000:
 # 	nsims = 1000
@@ -40,13 +41,13 @@ def main():
 	# Data
 	X_train_lin = np.load(data_prefix + "X_train_n" + str(ntrain) + "_lin.npy")
 	Y_train_lin = np.load(data_prefix + "Y_train_n" + str(ntrain) + "_lin.npy")
-	X_test_lin = np.load(data_prefix + "X_test_n" + str(ntrain) + "_lin.npy")
-	Y_test_lin = np.load(data_prefix + "Y_test_n" + str(ntrain) + "_lin.npy")
+	X_test_lin = np.load(data_prefix + "X_test_n" + str(ntest) + "_lin.npy")
+	Y_test_lin = np.load(data_prefix + "Y_test_n" + str(ntest) + "_lin.npy")
 
 	X_train_cub = np.load(data_prefix + "X_train_n" + str(ntrain) + "_cub.npy")
 	Y_train_cub = np.load(data_prefix + "Y_train_n" + str(ntrain) + "_cub.npy")
-	X_test_cub = np.load(data_prefix + "X_test_n" + str(ntrain) + "_cub.npy")
-	Y_test_cub = np.load(data_prefix + "Y_test_n" + str(ntrain) + "_cub.npy")
+	X_test_cub = np.load(data_prefix + "X_test_n" + str(ntest) + "_cub.npy")
+	Y_test_cub = np.load(data_prefix + "Y_test_n" + str(ntest) + "_cub.npy")
 
 	# Compare to linear reg (can do this separately)
 	#linreg = linear_model.LinearRegression()

@@ -4,6 +4,7 @@ import cPickle
 
 # Settings
 ntrain = [10**i for i in range(3,7)]
+ntest = 10000
 data_dim = 1000
 beta = list(rand.uniform(0.5, 1, size = 10)) + list(rand.uniform(0.1, 0.3, size = 40)) + list(rand.uniform(-1,-0.5, size = 10)) + list(rand.uniform(-0.3, -0.1, size = 40)) + [0]*900
 
@@ -31,9 +32,9 @@ for n in ntrain:
 	np.save("data/X_train_n" + str(n) + "_lin", X_train)
 	np.save("data/Y_train_n" + str(n) + "_lin", Y_train)
 
-X_test, Y_test = gen_data(10000, data_dim, "linear")
-np.save("data/X_test_n" + str(n) + "_lin", X_test)
-np.save("data/Y_test_n" + str(n) + "_lin", Y_test)
+X_test, Y_test = gen_data(ntest, data_dim, "linear")
+np.save("data/X_test_n" + str(ntest) + "_lin", X_test)
+np.save("data/Y_test_n" + str(ntest) + "_lin", Y_test)
 
 # Generate and save data (nonlinear)
 for n in ntrain:
@@ -42,6 +43,6 @@ for n in ntrain:
 	np.save("data/X_train_n" + str(n) + "_cub", X_train)
 	np.save("data/Y_train_n" + str(n) + "_cub", Y_train)
 
-X_test, Y_test = gen_data(10000, data_dim, "cubic")
-np.save("data/X_test_n" + str(n) + "_cub", X_test)
-np.save("data/Y_test_n" + str(n) + "_cub", Y_test)
+X_test, Y_test = gen_data(ntest, data_dim, "cubic")
+np.save("data/X_test_n" + str(ntest) + "_cub", X_test)
+np.save("data/Y_test_n" + str(ntest) + "_cub", Y_test)
