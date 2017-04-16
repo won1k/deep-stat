@@ -36,7 +36,7 @@ def model_unif(hid_dim, learning_rate, data_dim, num_layers):
 
 	return model
 
-def modelPyr(hid_dim, learning_rate, data_dim, num_layers):
+def model_pyr(hid_dim, learning_rate, data_dim, num_layers):
 	inputs = Input(shape=(data_dim,), name='input', dtype='float32')
 
 	# Dense layers (no dropout for now)

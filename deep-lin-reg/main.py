@@ -3,6 +3,7 @@ from model import model
 import csv
 import sys
 import os
+import itertools
 #import theano
 
 from sklearn import linear_model
@@ -20,6 +21,7 @@ nsims = 10
 
 # Hyperparameters
 hid_dim = 50
+nlayers = 10
 
 # Training parameters
 learning_rate = 0.001
@@ -62,8 +64,9 @@ def main():
 			print("Simulation: %d" % i)
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			# no w_norm, weights for now
-			train_mse, test_mse, train_r2, test_r2, train_time, test_time = trainAndTest(X_train_lin, Y_train_lin, X_test_lin, Y_test_lin, hid_dim, p, ntrain, learning_rate, nepochs)
-			writer.writerow([train_mse, test_mse, train_r2, test_r2, train_time, test_time])#, w_norm])
+			models, train_mse, test_mse, train_r2, test_r2, train_time = trainAndTest(X_train_lin, Y_train_lin, X_test_lin, Y_test_lin, hid_dim, p, ntrain, nlayers, learning_rate, nepochs)
+			for i in izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
+				writer.writerow(list(i))
 			# test_preds.append(test_pred)
 			# train_residuals.append(train_res)
 			# test_residuals.append(test_res)
@@ -74,8 +77,9 @@ def main():
 			print("Simulation: %d" % i)
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			# no w_norm, weights for now
-			train_mse, test_mse, train_r2, test_r2, train_time, test_time = trainAndTest(X_train_cub, Y_train_cub, X_test_cub, Y_test_cub, hid_dim, p, ntrain, learning_rate, nepochs)
-			writer.writerow([train_mse, test_mse, train_r2, test_r2, train_time, test_time])#, w_norm])
+			models, train_mse, test_mse, train_r2, test_r2, train_time = trainAndTest(X_train_lin, Y_train_lin, X_test_lin, Y_test_lin, hid_dim, p, ntrain, nlayers, learning_rate, nepochs)
+			for i in izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
+				writer.writerow(list(i))
 			# test_preds.append(test_pred)
 			# train_residuals.append(train_res)
 			# test_residuals.append(test_res)
