@@ -18,7 +18,9 @@ for (p in ps) {
       next
     }
     predvar = read.csv(data_file, header = FALSE)
-    predvar = predvar[sample(1:n,min(ns)),]
+    if (as.numeric(n) > 1000) {
+      predvar = predvar[sample(1:n,10000),]
+    }
     colnames(predvar) = c("test.var", "test.mse", "test.norm")
     if (as.numeric(n) < p*50) {
       c = ggplot(predvar, aes(test.norm, test.var), alpha = I(0.1)) + 
@@ -165,28 +167,280 @@ ggplot(data=total, aes(x=Model, y=TrainR2, fill=Model)) +
   xlab("Model") #+ guide_legend(title = "Legend")
 
 
+# Lineplots for MSE/R2 for DNNs ONLY (GOOD)
+n = "100000" # do for all p when you have
+ps = c(10, 100, 1000)
+ns = c("1000","10000","100000")
+line.df = data.frame(matrix(rep(NA,10), ncol = 10))
+colnames(line.df) = c("n","p","TestMSE","TestSD","TrainMSE","TrainSD","TestR2","TestR2SD","TrainR2","TrainR2SD")
+for (p in ps) {
+  for (n in ns) {
+    # Load metrics
+    metrics_file = paste(prefix, p, "_n", n, metrics_suffix, sep = "")
+    metrics = read.csv(metrics_file, header = FALSE)
+    # Concatenate all results
+    if (as.numeric(n) < 10^5) {
+      line.df = rbind(line.df, c(n, p, mean(metrics[,2]), sd(metrics[,2]), 
+                               mean(metrics[,1]), sd(metrics[,1]),
+                               mean(metrics[,4]), sd(metrics[,4]),
+                               mean(metrics[,3]), sd(metrics[,3])))
+    } else {
+      line.df = rbind(line.df, c(n, p, mean(metrics[,2]), as.numeric(sd(metrics[,2]))*sqrt(1/20), 
+                                 mean(metrics[,1]), as.numeric(sd(metrics[,1]))*sqrt(1/20),
+                                 mean(metrics[,4]), as.numeric(sd(metrics[,4]))*sqrt(1/20),
+                                 mean(metrics[,3]), as.numeric(sd(metrics[,3]))*sqrt(1/20)))
+    }
+  }
+}
+line.df = line.df[2:nrow(line.df),]
+line.df$n = as.numeric(line.df$n)
+line.df$TestMSE = as.numeric(line.df$TestMSE)
+line.df$TestSD = as.numeric(line.df$TestSD)
+line.df$TrainMSE = as.numeric(line.df$TrainMSE)
+line.df$TrainSD = as.numeric(line.df$TrainSD)
+line.df$TestR2 = as.numeric(line.df$TestR2)
+line.df$TestR2SD = as.numeric(line.df$TestR2SD)
+line.df$TrainR2 = as.numeric(line.df$TrainR2)
+line.df$TrainR2SD = as.numeric(line.df$TrainR2SD)
+
+# Plot Test MSE
+ggplot(data=line.df, aes(x=n, y=TestMSE, group=p)) + 
+  geom_errorbar(aes(ymin=TestMSE-TestSD, ymax=TestMSE+TestSD,linetype=p), width=1000) +
+  geom_line(aes(linetype=p)) +
+  geom_point(aes(shape=p)) +
+  scale_y_log10() +
+  labs(x = "Training Size (n)", y = "MSE on Test Set",
+       title = "")
+
+
+# Plot Train MSE
+ggplot(data=line.df, aes(x=n, y=TrainMSE, group=p)) + 
+  geom_errorbar(aes(ymin=TrainMSE-TrainSD, ymax=TrainMSE+TrainSD,linetype=p), width=1000) +
+  geom_line(aes(linetype=p)) +
+  geom_point(aes(shape=p)) + 
+  labs(x = "Training Size (n)", y = "MSE on Train Set",
+       title = "") + 
+  scale_y_log10()
+
+# Plot Test R2
+ggplot(data=line.df, aes(x=n, y=TestR2, group=p)) + 
+  geom_errorbar(aes(ymin=TestR2-TestR2SD, ymax=TestR2+TestR2SD,linetype=p), width=1000) +
+  geom_line(aes(linetype=p)) +
+  geom_point(aes(shape=p)) +
+  coord_cartesian(ylim = c(0.996,1)) +
+  labs(x = "Training Size (n)", y = "R2 on Test Set",
+       title = "")
+
+# Plot Train R2
+ggplot(data=line.df, aes(x=n, y=TrainR2, group=p)) + 
+  geom_errorbar(aes(ymin=TrainR2-TrainR2SD, ymax=TrainR2+TrainR2SD,linetype=p), width=1000) +
+  geom_line(aes(linetype=p)) +
+  geom_point(aes(shape=p)) +
+  coord_cartesian(ylim = c(0.996,1)) +
+  labs(x = "Training Size (n)", y = "R2 on Train Set",
+       title = "")
+
+# Test MSE against Ratio
+line.df$Ratio = as.numeric(line.df$n) / (50*as.numeric(line.df$p))
+ggplot(data=line.df, aes(x=Ratio, y=TestMSE)) +
+  stat_smooth(method=loess, alpha = 0.3, level = 0.3, color = rgb(0.4,0.4,0.4)) +
+  geom_point() +
+  scale_y_log10() +
+  labs(x = "Training Ratio (n / d)", y = "MSE on Test Set",
+       title = "")
+
+#smoothScatter(line.df$Ratio, line.df$TestMSE, log ="y",xlab = "Dist. of x* from x.bar", ylab = "Prediction Variance")
+#plot(line.df$Ratio, log(line.df$TestMSE), log = "y", pch = 16, cex = 1)
+#lines(lowess(line.df$Ratio, log(line.df$TestMSE)), col = "grey", lwd = 3)
+
+# Train MSE against Ratio
+ggplot(data=line.df, aes(x=Ratio, y=TrainMSE)) +
+  stat_smooth(method=loess, alpha = 0.3, level = 0.3, color = rgb(0.4,0.4,0.4)) +
+  geom_point() +
+  scale_y_log10() +
+  labs(x = "Training Ratio (n / d)", y = "MSE on Train Set",
+       title = "")
+
+
+
+
 
 # Training Times
 library(xtable)
 total.print = total[,c("Model","TrainTime")]
 xtable(total.print)
 
+# Training Times (USE LINE PLOT - also do fix n = 100000 vary p)
+benchmark_prefix = "lin-reg/results/benchmarks_p"
+benchmark_suffix = ".csv"
+metrics_suffix = "_l0.005_T800_metrics.csv"
+p = 10 # do for all p when you have
+times = c()
+models = c()
+for (n in ns) {
+  # Load benchmarks
+  benchmark_file = paste(benchmark_prefix, p, "_n", n, benchmark_suffix, sep = "")
+  if (file.exists(benchmark_file)) {
+    benchmarks = read.csv(benchmark_file, header = FALSE)
+    benchmarks$V1 = as.character(benchmarks$V1)
+  }
+  
+  # Load metrics
+  metrics_file = paste(prefix, p, "_n", n, metrics_suffix, sep = "")
+  metrics = read.csv(metrics_file, header = FALSE)
+  
+  # Rbind
+  if (file.exists(benchmark_file)) {
+    total = rbind(benchmarks, c("DNN", 0, mean(metrics[,1]), mean(metrics[,2]),
+                              mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
+    total$id = 1:nrow(total)
+    total$SD = c(rep(NA, nrow(total)-1), sd(metrics[,2]))
+    rmrow = c(5,6,8,9,11,12,14,15)
+    total = total[-rmrow,]
+  } else {
+    total = data.frame(c("DNN", 0, mean(metrics[,1]), mean(metrics[,2]),
+              mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
+    total$id = c(1)
+    total$SD = c(sd(metrics[,2]))
+  }
+  total$V1 <- factor(total$V1, levels = total$V1[order(total$id)])
+  total$V4 = as.numeric(total$V4)
+  colnames(total) = c("Model","Alpha","TrainMSE","TestMSE","TrainR2","TestR2","TrainTime","id","SD")
+  
+  # Join times together
+  times = c(times, total$TrainTime)
+  models = c(models, as.character(total$Model))
+}
+# Create df
+x = c(rep(1000,8), rep(10000,8), rep(100000,8))
+times = as.numeric(times)
+line.df = data.frame("x" = x, "model" = models, "times" = times)
+# Plot
+ggplot(data=line.df, aes(x=x, y=times, group=model)) +
+  geom_line(aes(linetype=model))+
+  geom_point(aes(shape=model))+
+  #scale_y_log10()+
+  labs(x = "Training Set Size (n)", y = "Training Time (s)",
+       title = paste("p = ",p,sep = ""))
+  #coord_cartesian(ylim = c(0,10)) 
+
+# vary p and n = 100000
+n = "100000" # do for all p when you have
+ps = c(10, 100, 1000)
+times = c()
+models = c()
+for (p in ps) {
+  # Load benchmarks
+  benchmark_file = paste(benchmark_prefix, p, "_n", n, benchmark_suffix, sep = "")
+  if (file.exists(benchmark_file)) {
+    benchmarks = read.csv(benchmark_file, header = FALSE)
+    benchmarks$V1 = as.character(benchmarks$V1)
+  }
+  
+  # Load metrics
+  metrics_file = paste(prefix, p, "_n", n, metrics_suffix, sep = "")
+  metrics = read.csv(metrics_file, header = FALSE)
+  
+  # Rbind
+  if (file.exists(benchmark_file)) {
+    total = rbind(benchmarks, c("DNN", 0, mean(metrics[,1]), mean(metrics[,2]),
+                                mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
+    total$id = 1:nrow(total)
+    total$SD = c(rep(NA, nrow(total)-1), sd(metrics[,2]))
+    rmrow = c(5,6,8,9,11,12,14,15)
+    total = total[-rmrow,]
+  } else {
+    total = data.frame(c("DNN", 0, mean(metrics[,1]), mean(metrics[,2]),
+                         mean(metrics[,3]), mean(metrics[,4]), mean(metrics[,5])))
+    total$id = c(1)
+    total$SD = c(sd(metrics[,2]))
+  }
+  total$V1 <- factor(total$V1, levels = total$V1[order(total$id)])
+  total$V4 = as.numeric(total$V4)
+  colnames(total) = c("Model","Alpha","TrainMSE","TestMSE","TrainR2","TestR2","TrainTime","id","SD")
+  
+  # Join times together
+  times = c(times, total$TrainTime)
+  models = c(models, as.character(total$Model))
+}
+# Create df
+x = c(rep(10,8), rep(100,8), rep(1000,8))
+times = as.numeric(times)
+line.df = data.frame("x" = x, "model" = models, "times" = times)
+# Plot
+ggplot(data=line.df, aes(x=x, y=times, group=model)) +
+  geom_line(aes(linetype=model))+
+  geom_point(aes(shape=model))+
+  #scale_y_log10()+
+  labs(x = "Data Dimension (p)", y = "Training Time (s)",
+       title = paste("n = ",n,sep = ""))+
+ coord_cartesian(ylim = c(0,3500)) 
+
+# Training Times for ONLY DNN
+ns = c("1000","10000","100000") # do for all p when you have
+ps = c(10, 100, 1000)
+times = c()
+models = c()
+for (n in ns) {
+  for (p in ps) {
+    # Load metrics
+    metrics_file = paste(prefix, p, "_n", n, metrics_suffix, sep = "")
+    metrics = read.csv(metrics_file, header = FALSE)
+    # Join times together
+    times = c(times, mean(metrics[,5]))
+  }
+}
+# Create df
+n.df = c(rep("1000",3), rep("10000",3), rep("100000",3))
+p.df = rep(ps, 3)
+times = as.numeric(times)
+dnn.df = data.frame("p" = p.df, "n" = n.df, "times" = times)
+# Plot (p)
+ggplot(data=dnn.df, aes(x=p, y=times, group=n)) +
+  geom_line(aes(linetype=n))+
+  geom_point(aes(shape=n))+
+  #scale_y_log10()+
+  labs(x = "Data Dimension (p)", y = "Training Time (s)",
+       title = "")
+
+# Plot (p)
+dnn.df$p.fac = as.factor(dnn.df$p)
+dnn.df$n.num = c(rep(1000,3), rep(10000,3), rep(100000,3))
+ggplot(data=dnn.df, aes(x=n.num, y=times, group=p.fac)) +
+  geom_line(aes(linetype=p.fac))+
+  geom_point(aes(shape=p.fac))+
+  #scale_y_log10()+
+  labs(x = "Training Size (n)", y = "Training Time (s)",
+       title = "")
+
+
+
+
+
 
 # Residuals
-train_res = read.csv("noreg_p10_n10000_l0.005_T800_train_res.csv", header = FALSE)
+train_res = read.csv("lin-reg/results/noreg_p10_n10000_l0.005_T800_train_res.csv", header = FALSE)
 hist(train_res[50,], breaks = 50)
-hist(as.vector(as.matrix(train_res)), breaks = 100)
+hist(as.vector(as.matrix(train_res[50,])), breaks = 100)
 
 test_res = read.csv("non-reg/results/noreg_sigmoid_p10_n1000_l0.005_T800_test_res.csv", header = FALSE)
-hist(as.numeric(test_res[5,]), breaks = 30)
-plot(density(test_res[,5]))
+hist(as.numeric(test_res[5,]), breaks = 20, prob = T)
+lines(density(test_res[,5]))
 
-# Residuals histogramistogram overlaid with kernel density curve
-res = data.frame(matrix(c(rep("A",1000),rep("B",1000),test_res[,25],test_res[,975]), ncol=2))
-res$X2 = as.numeric(as.character(res$X2))
-ggplot(test_res, aes(x=test_res[,750])) + geom_histogram(aes(y=..density..), # Histogram with density instead of count on y-axis
+# Residuals histogram overlaid with kernel density curve
+j = 750
+#res = data.frame(matrix(c(rep("A",1000),rep("B",1000),test_res[,25],test_res[,975]), ncol=2))
+#res$X2 = as.numeric(as.character(res$X2))
+ggplot(test_res, aes(x=test_res[,j])) + geom_histogram(aes(y=..density..), # Histogram with density instead of count on y-axis
                  binwidth=.01, alpha=0.5, fill = "white", color = "black") +
-  geom_density(alpha=.2, fill="#FF6666")  # Overlay with transparent density plot GOOD!!
+  geom_density(alpha=.2, fill="#FF6666") + # Overlay with transparent density plot GOOD!!
+  labs(x = "Residual", y = "Density",
+       title = paste("Test Example ",j,sep = ""))
+# QQplot
+j = 750
+qqnorm(test_res[,j])
+qqline(test_res[,j])
+
 
 ggplot(res, aes(x=X2, fill=X1)) +
   geom_histogram(binwidth=.01, alpha=.5, position="identity", aes(y = ..density..)) +

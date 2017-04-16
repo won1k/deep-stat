@@ -18,12 +18,13 @@ gc.enable()
 
 # Hyperparameters
 hid_dim = 50
+M = 10**4 # max time
 
 # Training parameters
 learning_rate = 0.005
 nepochs = 800
 
-data_prefix = os.path.expanduser("~/deep-stat/data/")
+data_prefix = os.path.expanduser("~/Projects/deep-stat/data/")
 output_file = "results/benchmarks" + "_p" + str(p) + "_n" + str(ntrain) + ".csv"
 
 def main():
@@ -58,19 +59,22 @@ def main():
 	del gc.garbage[:]
 
 	# Splines
-	print("MARS")
-	spline = Earth(max_degree = 3, enable_pruning = True)
-	start_time = time.time()
-	spline.fit(X_train, Y_train)
-	spline_train_time = time.time() - start_time
-	spline_train_mse = metrics.mean_squared_error(Y_train, spline.predict(X_train))
-	spline_test_mse = metrics.mean_squared_error(Y_test, spline.predict(X_test))
-	spline_train_r2 = metrics.r2_score(Y_train, spline.predict(X_train))
-	spline_test_r2 = metrics.r2_score(Y_test, spline.predict(X_test))
-	output.append(["MARS", 0, spline_train_mse, spline_test_mse, spline_train_r2, spline_test_r2, spline_train_time])
-	del spline
-	gc.collect()
-	del gc.garbage[:]
+	if ntrain < 10**5:
+		print("MARS")
+		spline = Earth(max_degree = 3, enable_pruning = True)
+		start_time = time.time()
+		spline.fit(X_train, Y_train)
+		spline_train_time = time.time() - start_time
+		spline_train_mse = metrics.mean_squared_error(Y_train, spline.predict(X_train))
+		spline_test_mse = metrics.mean_squared_error(Y_test, spline.predict(X_test))
+		spline_train_r2 = metrics.r2_score(Y_train, spline.predict(X_train))
+		spline_test_r2 = metrics.r2_score(Y_test, spline.predict(X_test))
+		output.append(["MARS", 0, spline_train_mse, spline_test_mse, spline_train_r2, spline_test_r2, spline_train_time])
+		del spline
+		gc.collect()
+		del gc.garbage[:]
+	else:
+		output.append(["MARS", 0, 0, 0, 0, 0, M])
 
 
 	# Poly. regression
@@ -89,6 +93,8 @@ def main():
 		del polyreg
 		gc.collect()
 		del gc.garbage[:]
+	else:
+		output.append(["Poly", 0, 0, 0, 0, 0, M])
 
 	# Linear + L1
 	print("Lasso")
@@ -139,6 +145,9 @@ def main():
 			del polyreg
 			gc.collect()
 			del gc.garbage[:]
+	else:
+		for lamb in [0.1, 1.0, 10.0]:
+			output.append(["PolyLasso", lamb, 0, 0, 0, 0, M])
 
 	# Poly. + L2
 	if ntrain < 10**5:
@@ -157,6 +166,9 @@ def main():
 			del polyreg
 			gc.collect()
 			del gc.garbage[:]
+	else:
+		for lamb in [0.1, 1.0, 10.0]:
+			output.append(["PolyRidge", lamb, 0, 0, 0, 0, M])
 
 	# Save output
 	with open(output_file, "wb") as f:

@@ -10,3 +10,5 @@ non-reg/err/
 non-reg/plots/
 *.pyc
 **/*.pyc
+**/data/
+**/results/
