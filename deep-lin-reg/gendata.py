@@ -21,7 +21,7 @@ def true_function(x, type):
 # Data generation
 def gen_data(n, data_dim, type):
 	X = rand.normal(size = (n, data_dim))#(ntrain, data_dim,1))
-	Y = np.array([true_function(x, type) for x in X_train])
+	Y = np.array([true_function(x, type) for x in X])
 	return X, Y
 
 # Generate and save data (linear)
