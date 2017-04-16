@@ -1,5 +1,5 @@
 import numpy as np
-from model import model
+#from model import model
 import csv
 import sys
 import os
