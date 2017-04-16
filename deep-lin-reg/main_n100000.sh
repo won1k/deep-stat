@@ -4,9 +4,10 @@
 #SBATCH -t 5-00:10              # Runtime in D-HH:MM
 #SBATCH -p stats          # Partition to submit to
 #SBATCH --mem=50000               # Memory pool for all cores (see also --mem-per-cpu)
-#SBATCH -o log      # File to which STDOUT will be written
-#SBATCH -e err      # File to which STDERR will be written
+#SBATCH -o log/n100000      # File to which STDOUT will be written
+#SBATCH -e err/n100000      # File to which STDERR will be written
 
+module load python/2.7.11-fasrc01
 source activate deepstat
 #module load keras
 #KERAS_BACKEND=tensorflow python -c "from keras import backend"
