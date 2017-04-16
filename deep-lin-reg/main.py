@@ -23,7 +23,7 @@ hid_dim = 50
 
 # Training parameters
 learning_rate = 0.001
-nepochs = 100
+nepochs = 200
 
 data_prefix = os.path.expanduser("~/deep-stat/deep-lin-reg/data/")
 output_prefix = "results/noreg_n" + str(ntrain)
