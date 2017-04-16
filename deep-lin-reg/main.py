@@ -16,7 +16,7 @@ p = 1000 # [10, 100, 1000]
 # 	nsims = 1000
 # else:
 # 	nsims = 50
-nsims = 5
+nsims = 10
 
 # Hyperparameters
 hid_dim = 50
