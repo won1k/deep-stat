@@ -20,7 +20,7 @@ def trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, n, L, learning_ra
 	train_time = []
 	for model in models:
 		start_time = time.time()
-		model.fit(X_train, Y_train, batch_size = 100, nb_epoch = nepochs, verbose = 1)
+		model.fit(X_train, Y_train, batch_size = 100, nb_epoch = nepochs, verbose = 0)
 		train_time.append(time.time() - start_time)
 
 	# MSE / R2
