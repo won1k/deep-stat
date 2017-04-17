@@ -34,6 +34,7 @@ def main():
 	output = []
 
 	# Data
+	print("Loading data")
 	X_train_lin = np.load(data_prefix + "X_train_n" + str(ntrain) + "_lin.npy")
 	Y_train_lin = np.load(data_prefix + "Y_train_n" + str(ntrain) + "_lin.npy")
 	X_test_lin = np.load(data_prefix + "X_test_n" + str(ntest) + "_lin.npy")
@@ -48,16 +49,19 @@ def main():
 	benchmarks = []
 
 	# Linear
+	print("Linear reg")
 	linreg = linear_model.LinearRegression()
 	linreg.fit(X_train_lin, Y_train_lin)
 	benchmarks.append([np.mean((linreg.predict(X_train_lin) - Y_train_lin) ** 2), np.mean((linreg.predict(X_test_lin) - Y_test_lin) ** 2)])
 
 	# Cubic
+	print("Linear reg for cubic")
 	cubreg = linear_model.LinearRegression()
 	cubreg.fit(X_train_cub, Y_train_cub)
 	benchmarks.append([np.mean((cubreg.predict(X_train_cub) - Y_train_cub) ** 2), np.mean((cubreg.predict(X_test_cub) - Y_test_cub) ** 2)])
 
 	# Compare to poly reg (NO interaction terms for simplicity!)
+	print("Poly features")
 	X_train_poly = []
 	X_test_poly = []
 	for x in X_train_cub:
@@ -69,6 +73,7 @@ def main():
 	X_test_poly = np.array(X_test_poly)
 
 	# Cubic
+	print("Cubic reg")
 	cubreg = linear_model.LinearRegression()
 	cubreg.fit(X_train_poly, Y_train_cub)
 	benchmarks.append([np.mean((cubreg.predict(X_train_poly) - Y_train_cub) ** 2), np.mean((cubreg.predict(X_test_poly) - Y_test_cub) ** 2)])
