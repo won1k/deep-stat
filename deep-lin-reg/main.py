@@ -66,7 +66,7 @@ def main():
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			# no w_norm, weights for now
 			models, train_mse, test_mse, train_r2, test_r2, train_time = trainAndTest(X_train_lin, Y_train_lin, X_test_lin, Y_test_lin, hid_dim, p, ntrain, nlayers, learning_rate, nepochs)
-			for i in izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
+			for i in itertools.izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
 				writer.writerow(list(i))
 			# test_preds.append(test_pred)
 			# train_residuals.append(train_res)
@@ -79,7 +79,7 @@ def main():
 			#trainAndTest(X_train, Y_train, X_test, Y_test, hid_dim, p, ntrain, learning_rate, nepochs)
 			# no w_norm, weights for now
 			models, train_mse, test_mse, train_r2, test_r2, train_time = trainAndTest(X_train_lin, Y_train_lin, X_test_lin, Y_test_lin, hid_dim, p, ntrain, nlayers, learning_rate, nepochs)
-			for i in izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
+			for i in itertools.izip(models, train_mse, test_mse, train_r2, test_r2, train_time):
 				writer.writerow(list(i))
 			# test_preds.append(test_pred)
 			# train_residuals.append(train_res)
