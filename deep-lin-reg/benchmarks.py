@@ -68,7 +68,7 @@ def main():
 		X_train_poly.append(polyFeatures(x))
 	X_train_poly = np.array(X_train_poly)
 
-	for x in X_train_cub:
+	for x in X_test_cub:
 		X_test_poly.append(polyFeatures(x))
 	X_test_poly = np.array(X_test_poly)
 
